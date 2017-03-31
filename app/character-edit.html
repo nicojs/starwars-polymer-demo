@@ -1,0 +1,37 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-elements/iron-elements.html">
+<link rel="import" href="../bower_components/paper-elements/paper-elements.html">
+
+<dom-module id="character-edit">
+    <template>
+        <h2>Edit character {{subPage.subPageName}}</h2>
+        <iron-localstorage name="starwars" value="{{selectedCharacter}}" on-iron-localstorage-load-empty="initializeDefaultCharacter"></iron-localstorage>
+        <paper-input label="name" value="{{selectedCharacter.name}}" on-input="nameInput"></paper-input>
+        <input is="iron-input" value="{{selectedCharacter.age::input}}" prevent-invalid-input allowed-pattern="[0-9]" type="text">
+        <p>input name: [[selectedCharacter.name]]</p>
+    </template>
+    <script>
+        Polymer({
+            is: 'character-edit',
+            properties: {
+                selectedCharacter: {
+                    type: Object,
+                    value: {}
+                },
+                subPage: {
+                    type: Object
+                }
+            },
+            nameInput() {
+                this.set('subPage.subPageName', this.selectedCharacter.name);
+                this.notifyPath('selectedCharacter.name');
+            },
+            initializeDefaultCharacter(){
+                this.selectedCharacter = {
+                    name: '',
+                    
+                };
+            }
+        })
+    </script>
+</dom-module>

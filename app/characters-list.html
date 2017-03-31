@@ -1,0 +1,71 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-elements/iron-elements.html">
+
+<dom-module id="abc-abc">
+    <template>
+        <h2>Test</h2>
+    </template>
+    <script>
+        Polymer({
+            is: 'abc-abc'
+        });
+    </script>
+</dom-module>
+
+<dom-module id="characters-list">
+    <style>
+        h2 {
+            color: var(--characters-title-color, blue);
+        }
+        
+        iron-list {
+            height: 50vh;
+        }
+    </style>
+    <template>
+        <div class="test">
+            <h2>Characters</h2>
+
+            <iron-ajax id="ajaxCall" url="https://jsonplaceholder.typicode.com/users" auto handle-as="json" on-response="handleUsers"></iron-ajax>
+
+            <iron-list items="[[items]]" as="character">
+                <template>
+                    <paper-item>
+                        <paper-item-body two-line>
+                            <div>[[character.name]]</div>
+                            <div secondary>([[character.age]] year(s) old)</div>
+                        </paper-item-body>
+                        <paper-icon-button on-tap="editClicked" icon="create"></paper-icon-button>
+                    </paper-item>
+                </template>
+            </iron-list>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'characters-list',
+            properties: {
+                items: {
+                    type: Array
+                },
+                selectedCharacter: {
+                    type: Object,
+                    notify: true
+                }
+            },
+            handleUsers(event) {
+                var self = this;
+                event.detail.response.forEach(function (user) {
+                    self.push('items', user);
+                });
+            },
+            editClicked(event) {
+                console.log('edit clicked');
+                this.selectedCharacter = event.model.character;
+                this.fire('character-selected', {
+                    selected: event.model.character
+                });
+            }
+        });
+    </script>
+</dom-module>

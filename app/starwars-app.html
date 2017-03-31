@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="characters-list.html">
+<link rel="import" href="character-edit.html">
+<link rel="import" href="../bower_components/iron-elements/iron-elements.html">
+<link rel="import" href="../bower_components/paper-elements/paper-elements.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/app-elements/app-elements.html">
+
+<dom-module id="starwars-app">
+
+    <style include="iron-flex iron-flex-alignment">
+         :host {
+            --my-toolbar-title-color: green;
+        }
+        
+        .container {
+            height: 100%;
+        }
+        
+        paper-item {
+            cursor: pointer;
+        }
+    </style>
+    <template>
+        <paper-drawer-panel id="myDrawer">
+            <div drawer>
+                <paper-menu selected="{{routeData.pageName}}" attr-for-selected="page-name">
+                    <paper-item page-name="list">List</paper-item>
+                    <paper-item page-name="edit">New</paper-item>
+                </paper-menu>
+            </div>
+            <paper-header-panel main mode="waterfall" class="container flex">
+                <paper-toolbar>
+                    <paper-icon-button icon="menu" paper-drawer-toggle></paper-icon-button>
+                    <h1>Starwars</h1>
+                </paper-toolbar>
+                <div>
+                    <app-location route="{{theRoute}}" ></app-location>
+                    <app-route route="{{theRoute}}" tail="{{tail}}" pattern="/:pageName" data="{{routeData}}"></app-route>
+                    <app-route route="{{tail}}" pattern="/:subPageName" data="{{subRouteData}}"></app-route>
+                    <paper-button raised on-tap="printRoute">Click me</paper-button>
+                    <neon-animated-pages selected="{{routeData.pageName}}" attr-for-selected="page-name" exit-animation="slide-right-animation" entry-animation="slide-from-left-animation">
+                        <characters-list on-character-selected="characterSelected" page-name="list" class="flex" selected-character="{{selectedChar}}"
+                            items="[[characters]]"></characters-list>
+                        <character-edit sub-page="{{subRouteData}}" page-name="edit" selected-character="{{selectedChar}}"></character-edit>
+                    </neon-animated-pages>
+                </div>
+            </paper-header-panel>
+        </paper-drawer-panel>
+    </template>
+    <script>
+        Polymer({
+            is: 'starwars-app',
+            openMenu() {
+                this.$.myDrawer.openDrawer();
+            },
+            characterSelected() {
+                console.log('edit');
+                this.selectedPage = 'edit';
+            },
+            printRoute() {
+                console.log(this.theRoute);
+                console.log(this.routeData);
+                console.log(this.tail);
+            },
+            properties: {
+                routeData: {
+                    type: Object
+                },
+                selectedChar: {
+                    type: Object
+                },
+                characters: {
+                    type: Array,
+                    value: [
+                        {
+                            name: 'Luke Skywalker',
+                            age: 53
+                        }, {
+                            name: 'R2D2',
+                            age: 66
+                        }, {
+                            name: 'Princess Leia',
+                            age: 53
+                        }, {
+                            name: 'Han Solo',
+                            age: 63
+                        }, {
+                            name: 'Watto',
+                            age: 168
+                        },
+                    ]
+                }
+            }
+        });
+    </script>
+</dom-module>
